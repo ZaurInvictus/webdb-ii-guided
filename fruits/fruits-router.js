@@ -1,15 +1,26 @@
 const express = require('express');
 const knex = require('knex');
 
-const db = knex({
-  client: 'sqlite3',
-  connection: {
-    filename: './data/produce.db3'
-  },
-  useNullAsDefault: true
-});
+const knexConfig = require('../knexfile.js')
+
+const db = knex(knexConfig.development)
+
+// // THIS IS HOW WE CONNECT KNEX TO THE DATABASE
+// const db = knex({
+//   // driver to use
+//   client: 'sqlite3',
+//   // how to find the database
+//   connection: {
+//     // from the root folder
+//     filename: './data/produce.db3'
+//   },
+//    // required for sqlite
+//   useNullAsDefault: true
+// });
+
 
 const router = express.Router();
+
 
 router.get('/', (req, res) => {
   db('fruits')
@@ -20,6 +31,7 @@ router.get('/', (req, res) => {
     res.status(500).json({ message: 'Failed to retrieve fruits' });
   });
 });
+
 
 router.get('/:id', (req, res) => {
   const { id } = req.params;
@@ -32,6 +44,7 @@ router.get('/:id', (req, res) => {
     res.status(500).json({ message: 'Failed to retrieve fruit' });
   });
 });
+
 
 router.post('/', (req, res) => {
   const fruitData = req.body;
@@ -47,5 +60,6 @@ router.post('/', (req, res) => {
     res.status(500).json({ message: "Failed to store data" });
   });
 });
+
 
 module.exports = router;
